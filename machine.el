@@ -158,6 +158,7 @@ cannot be determined.  If t, these warnings are elevated to
 errors.  Any other value ignores the warnings completely.
 
 NOMESSAGE is passed directly to `load'."
+  (interactive)                         ; what the hell
   (machine-get-files)
   (if machine-files
       (let (files-loaded)
