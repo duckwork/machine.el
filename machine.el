@@ -175,7 +175,7 @@ NOMESSAGE is passed directly to `load'."
                  (null error) (machine--warn "Couldn't load machine-files."))))
         ;; Set up `machine-after-load-theme'.
         (funcall machine-after-load-theme)
-        (add-hook 'load-theme :after machine-after-load-theme)
+        (advice-add 'load-theme :after machine-after-load-theme)
         ;; Return the files loaded.
         files-loaded)
     (funcall (cond ((eq error t) #'error)
