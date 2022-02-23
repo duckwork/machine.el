@@ -141,6 +141,11 @@ This function updates `machine-files'."
     ;; Update `machine-files'.
     (setq machine-files ret)))
 
+(defvar machine-after-load-theme #'ignore
+  "Function to run after `load-theme'.
+Add machine-specific functionality to this function using
+`add-function'.")
+
 ;;;###autoload
 (defun machine-settings-load (&optional error nomessage)
   "Load machine settings from `machine-files'.
@@ -153,6 +158,7 @@ cannot be determined.  If t, these warnings are elevated to
 errors.  Any other value ignores the warnings completely.
 
 NOMESSAGE is passed directly to `load'."
+  (interactive)                         ; what the hell
   (machine-get-files)
   (if machine-files
       (let (files-loaded)
@@ -167,6 +173,10 @@ NOMESSAGE is passed directly to `load'."
         (unless files-loaded
           (cond ((eq error t) (error "Error loading machine-files.")
                  (null error) (machine--warn "Couldn't load machine-files."))))
+        ;; Set up `machine-after-load-theme'.
+        (funcall machine-after-load-theme)
+        (advice-add 'load-theme :after machine-after-load-theme)
+        ;; Return the files loaded.
         files-loaded)
     (funcall (cond ((eq error t) #'error)
                    ((null error) #'machine--warn)
